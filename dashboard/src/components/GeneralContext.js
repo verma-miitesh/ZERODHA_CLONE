@@ -11,6 +11,8 @@ export const GeneralContextProvider = (props) => {
   const [isBuyWindowOpen, setIsBuyWindowOpen] = useState(false);
   const [selectedStockUID, setSelectedStockUID] = useState("");
 
+  const fetchHoldings = props.fetchHoldings;
+
   const handleOpenBuyWindow = (uid) => {
     setIsBuyWindowOpen(true);
     setSelectedStockUID(uid);
@@ -23,13 +25,13 @@ export const GeneralContextProvider = (props) => {
 
   return (
     <GeneralContext.Provider
-      value={{
+      value={{  
         openBuyWindow: handleOpenBuyWindow,
         closeBuyWindow: handleCloseBuyWindow,
       }}
     >
       {props.children}
-      {isBuyWindowOpen && <BuyActionWindow uid={selectedStockUID} />}
+      {isBuyWindowOpen && <BuyActionWindow uid={selectedStockUID} fetchHoldings={fetchHoldings}/>}
     </GeneralContext.Provider>
   );
 };

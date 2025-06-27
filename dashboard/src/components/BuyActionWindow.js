@@ -1,31 +1,47 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
 
 import GeneralContext from "./GeneralContext";
 
-
 import "./BuyActionWindow.css";
 
-const BuyActionWindow = ({ uid }) => {
+const BuyActionWindow = ({ uid,fetchHoldings }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   const [stockPrice, setStockPrice] = useState(0.0);
 
-  const handleBuyClick = () => {
-    axios.post("http://localhost:3002/newOrder", {
-      name: uid,
-      qty: stockQuantity,
-      price: stockPrice,
-      mode: "BUY",
-    });
+  const { closeBuyWindow } = useContext(GeneralContext);
 
-    GeneralContext.closeBuyWindow();
+  const handleBuyClick = () => {
+    fetch("http://localhost:3002/newOrder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: uid,
+        qty: stockQuantity,
+        price: stockPrice,
+        mode: "BUY",
+      }),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        fetchHoldings(); // ✅ Re-fetch holdings from backend
+        closeBuyWindow(); // ✅ Close modal
+      })
+      .catch((err) => {
+        console.error("Buy failed:", err);
+      });
   };
 
   const handleCancelClick = () => {
-    GeneralContext.closeBuyWindow();
+    closeBuyWindow();
   };
+
+  const marginRequired = parseFloat(stockQuantity) * parseFloat(stockPrice) || 0;
+  // console.log("Qty:", stockQuantity, "Price:", stockPrice, "Margin:", marginRequired);
 
   return (
     <div className="container" id="buy-window" draggable="true">
@@ -56,7 +72,7 @@ const BuyActionWindow = ({ uid }) => {
       </div>
 
       <div className="buttons">
-        <span>Margin required ₹140.65</span>
+        <span>Margin required ₹{(marginRequired || 0).toFixed(2)}</span>
         <div>
           <Link to="" className="btn btn-blue" onClick={handleBuyClick}>
             Buy

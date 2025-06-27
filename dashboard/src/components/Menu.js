@@ -69,12 +69,12 @@ const Menu = () => {
           <li>
             <Link
               style={{ textDecoration: "none" }}
-              to="funds"
+              to="/funds"
               onClick={() => handleMenuClick(4)}
             >
               <p className={selectedMenu === 4 ? activeMenuClass : menuClass}>
                 Funds
-              </p>
+              </p>  
             </Link>
           </li>
           <li>
@@ -94,6 +94,7 @@ const Menu = () => {
           <div className="avatar">ZU</div>
           <p className="username">USERID</p>
         </div>
+        
       </div>
     </div>
   );

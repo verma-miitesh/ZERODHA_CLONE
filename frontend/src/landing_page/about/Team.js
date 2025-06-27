@@ -11,15 +11,15 @@ function Team() {
       >
         <div className="col-6 p-5 text-center">
           <img
-            src="Media/images/nithinKamath.jpg"
+            src="Media/images/Miitesh_Photo_1.jpg"
             style={{ borderRadius: "100%", width: "60%" }}
           />
-          <h4 className="mt-5">Nithin Kamath</h4>
+          <h4 className="mt-5">MIITESH VERMA</h4>
           <h6>Founder, CEO</h6>
         </div>
         <div className="col-6 p-5">
           <p>
-            Nithin bootstrapped and founded Zerodha in 2010 to overcome the
+            MIITESH bootstrapped and founded Zerodha in 2010 to overcome the
             hurdles he faced during his decade long stint as a trader. Today,
             Zerodha has changed the landscape of the Indian broking industry.
           </p>

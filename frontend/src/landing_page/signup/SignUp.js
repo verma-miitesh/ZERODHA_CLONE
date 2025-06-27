@@ -44,16 +44,20 @@ const Signup = () => {
       //   },
       //   { withCredentials: true }
       // );
-      const { data } = await axios.post("/signup", inputValue, { withCredentials: true });
 
+      console.log(inputValue);
+      const response = await axios.post("/signup", inputValue, { withCredentials: true });
+      
+      const { success, message, data } = response.data;
 
-      console.log("API response: ", data);
-      const { success, message } = data;
+      console.log(success);
+      console.log(message);
+      
       if (success) {
-  setIsLoggedIn(true);
-  setUser(data.user);
-  handleSuccess(message); // shows Welcome toast
-  setTimeout(() => navigate("/"), 1500);
+          setIsLoggedIn(true);
+          setUser(data.user);
+          handleSuccess(message); // shows Welcome toast
+          setTimeout(() => navigate("/"), 1500);
 } else {
   handleError(message); // already registered
 }

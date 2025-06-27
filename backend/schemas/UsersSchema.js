@@ -21,9 +21,4 @@ const UsersSchema = new mongoose.Schema({
   },
 });
 
-UsersSchema.pre("save", async function () {
-  this.password = await bcrypt.hash(this.password, 12);
-});
-
-
 module.exports = {UsersSchema};

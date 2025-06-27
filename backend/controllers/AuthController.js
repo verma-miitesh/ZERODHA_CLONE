@@ -1,10 +1,11 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const User = require("../model/UsersModel");
 const { createSecretToken } = require("../util/SecretToken");
 
 const Signup = async (req, res, next) => {
   try {
+    // console.log(req.body);
     const { email, username, password } = req.body;
 
     if (!email || !username || !password) {
@@ -16,10 +17,16 @@ const Signup = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
-        .status(400)
+        // .status(400)
         .json({ message: "User already registered", success: false });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (typeof password !== 'string' || password.trim() === '') {
+      return res.status(400).json({ message: "Invalid password", success: false });
+    } 
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+   
     const newUser = new User({ email, password: hashedPassword, username });
     await newUser.save();
 
@@ -41,14 +48,17 @@ const Signup = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Signup Error:", error);
+    // console.error("Signup Error:", error);
     res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
 const Login = async (req, res, next) => {
   try {
+    
     const { email, password } = req.body;
+
+    console.log(password);
 
     if (!email || !password) {
       return res
@@ -57,25 +67,29 @@ const Login = async (req, res, next) => {
     }
 
     const user = await User.findOne({ email });
+    console.log(user);
+
     if (!user) {
       return res
         .status(400)
         .json({ message: "Please signup first", success: false });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    const isPasswordValid =await bcrypt.compare(password, user.password);
+    if (isPasswordValid===false) {
       return res
-        .status(400)
+        // .status(400)
         .json({ message: "Invalid username or password", success: false });
     }
 
     const token = createSecretToken(user._id);
+
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "Lax",
       secure: false,
     });
+
     res.status(200).json({
       message: `Welcome, ${user.username}`,
       success: true,

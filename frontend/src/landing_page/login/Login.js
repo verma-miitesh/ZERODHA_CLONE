@@ -2,8 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosConfig";
 
-import { AuthContext } from "../../context/AuthContext"; 
-
+import { AuthContext } from "../../context/AuthContext";
 
 import { ToastContainer, toast } from "react-toastify";
 
@@ -43,26 +42,32 @@ const Login = () => {
       //   },
       //   { withCredentials: true }
       // );
-      const { data } = await axios.post("/login", inputValue, { withCredentials: true });
-
+      const { data } = await axios.post("/login", inputValue, {
+        withCredentials: true,
+      });
 
       console.log(data);
       const { success, message } = data;
       if (success) {
-  setIsLoggedIn(true);
-  setUser(data.user);
-  handleSuccess(message); // shows Welcome toast
-  setTimeout(() => navigate("/"), 1500);
-} else {
-  handleError(message);
-}
+        setIsLoggedIn(true);
+        // setUser(data.user);
+        handleSuccess(message); // shows Welcome toast
+        setTimeout(() => navigate("/"), 1500);
+      } else {
+        handleError(message);
+      }
     } catch (error) {
-  if (error.response && error.response.data && error.response.data.message) {
-    handleError(error.response.data.message);
-  } else {
-    handleError("Something went wrong. Try again.");
-  }
-}
+      console.log("Login error: ",error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        handleError(error.response.data.message);
+      } else {
+        handleError("Something went wrong. Try again.");
+      }
+    }
     setInputValue({
       ...inputValue,
       email: "",
